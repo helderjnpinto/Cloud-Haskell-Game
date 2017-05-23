@@ -12,7 +12,8 @@ import Html.Events exposing (..)
 import WebSocket
 import Types exposing (..)
 import Json.Encode as JE
-
+import Json.Decode as JD exposing (Decoder, float, int)
+import Data exposing (..)
 
 main : Program Never Model Msg
 main =
@@ -38,9 +39,9 @@ type alias Model =
     , board : Board
     }
 
-
+initModel : Model
 initModel =
-    { input = "String"
+    { input = ""
     , board = Board [] []
     }
 
@@ -71,12 +72,13 @@ update msg model =
             (!) model []
 
         NewMessage v ->
-            let
-                _ =
-                    v
-                        |> Debug.log "NewMessage: ->"
-            in
-                (!) model []
+          case (JD.decodeString decodeBoard v) of
+            -- ok correct decoded data
+              Ok boardData ->
+                  (!) { model | board = boardData } []
+            -- Error
+              _ ->
+                  (!) model []
 
 
 
@@ -100,7 +102,6 @@ view model =
     div []
         [ input [ onInput Input, value model.input ] []
         , button [ onClick Send ] [ text "Send" ]
-        , div [] (List.map viewMessage (List.reverse model.messages))
         ]
 
 
