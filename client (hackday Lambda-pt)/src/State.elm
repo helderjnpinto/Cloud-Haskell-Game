@@ -9,7 +9,7 @@ import Response exposing (..)
 import Types exposing (..)
 import WebSocket
 
-
+-- Haskell server endpoint
 websocketEndpoint : String
 websocketEndpoint =
     "ws://94.60.163.141:8000"
