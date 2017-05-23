@@ -1,0 +1,44 @@
+var _user$project$Data$decodeCoords = A3(
+	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+	'y',
+	_elm_lang$core$Json_Decode$float,
+	A3(
+		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+		'x',
+		_elm_lang$core$Json_Decode$float,
+		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Types$Coords)));
+var _user$project$Data$decodeGps = A3(
+	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+	'position',
+	_user$project$Data$decodeCoords,
+	A3(
+		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+		'distance',
+		_elm_lang$core$Json_Decode$float,
+		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Types$Gps)));
+var _user$project$Data$decodePlayer = A3(
+	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+	'color',
+	_elm_lang$core$Json_Decode$maybe(_elm_lang$core$Json_Decode$string),
+	A3(
+		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+		'position',
+		_user$project$Data$decodeCoords,
+		A3(
+			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+			'score',
+			_elm_lang$core$Json_Decode$int,
+			A3(
+				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+				'name',
+				_elm_lang$core$Json_Decode$string,
+				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Types$Player)))));
+var _user$project$Data$decodeBoard = A3(
+	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+	'players',
+	_elm_lang$core$Json_Decode$list(_user$project$Data$decodePlayer),
+	A3(
+		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+		'gpss',
+		_elm_lang$core$Json_Decode$list(_user$project$Data$decodeGps),
+		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Types$Board)));

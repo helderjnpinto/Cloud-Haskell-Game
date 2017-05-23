@@ -1,0 +1,16 @@
+var _user$project$App_Types$Coords = F2(
+	function (a, b) {
+		return {x: a, y: b};
+	});
+var _user$project$App_Types$Gps = F2(
+	function (a, b) {
+		return {distance: a, position: b};
+	});
+var _user$project$App_Types$Player = F4(
+	function (a, b, c, d) {
+		return {name: a, score: b, position: c, color: d};
+	});
+var _user$project$App_Types$Board = F2(
+	function (a, b) {
+		return {gpss: a, players: b};
+	});
