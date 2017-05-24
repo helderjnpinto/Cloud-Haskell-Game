@@ -62,6 +62,7 @@ type Msg
     = Input String
     | Move Coords
     -- | SendName String
+    | SetColor String
     | NewMessage String
 
 
@@ -70,6 +71,20 @@ update msg model =
     case msg of
         Input newInput ->
             (!) { model | input = newInput } []
+
+        SetColor color ->
+          let
+              moveCmd =
+                  JE.object
+                      [ ( "tag", JE.string "SetColor" )
+                      , ( "contents", JE.string color )
+                      ]
+
+              wsCmd =
+                  JE.encode 0 moveCmd
+                  |> WebSocket.send haskellServer
+          in
+            (!) model [wsCmd]
 
         Move coords ->
             -- (Model "" messages, WebSocket.send echoServer input)
@@ -117,11 +132,16 @@ subscriptions model =
 
 
 -- VIEW
-
+colorPicker : Html Msg
+colorPicker =
+  input
+    [ type_ "color", name "favcolor", value "#ff0000", onInput SetColor ]
+    []
 
 view : Model -> Html Msg
 view model =
     div []
         [ input [ onInput Input, value model.input ] []
         , button [ onClick (Move <| Coords -1.0 0.0 ) ] [ text "Left" ]
+        , colorPicker
         ]

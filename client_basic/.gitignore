@@ -1,8 +1,10 @@
 elm-stuff
+./elm-stuff
+index.html
 elm-stuff_old
 node_modules
 npm-debug.log
 .project
-elm.js 
+elm.js
 erl_crash.dump
 .DS_Store
