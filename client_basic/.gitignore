@@ -1,0 +1,8 @@
+elm-stuff
+elm-stuff_old
+node_modules
+npm-debug.log
+.project
+elm.js 
+erl_crash.dump
+.DS_Store

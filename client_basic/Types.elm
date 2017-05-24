@@ -2,7 +2,7 @@ module Types exposing (..)
 
 {-| All types for app
 -}
-
+ 
 
 type alias Coords =
     { x : Float

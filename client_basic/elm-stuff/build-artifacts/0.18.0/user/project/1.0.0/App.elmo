@@ -1,13 +1,12 @@
-var _user$project$App$viewMessage = function (msg) {
-	return A2(
-		_elm_lang$html$Html$div,
+var _user$project$App$initModel = {
+	input: '',
+	board: A2(
+		_user$project$Types$Board,
 		{ctor: '[]'},
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html$text(msg),
-			_1: {ctor: '[]'}
-		});
+		{ctor: '[]'})
 };
+var _user$project$App$init = {ctor: '_Tuple2', _0: _user$project$App$initModel, _1: _elm_lang$core$Platform_Cmd$none};
+var _user$project$App$haskellServer = 'ws://localhost:8000';
 var _user$project$App$update = F2(
 	function (msg, model) {
 		var _p0 = msg;
@@ -20,17 +19,58 @@ var _user$project$App$update = F2(
 						}),
 					model,
 					{ctor: '[]'});
-			case 'Send':
+			case 'Move':
+				var _p1 = _p0._0;
+				var moveCoords = _elm_lang$core$Json_Encode$object(
+					{
+						ctor: '::',
+						_0: {
+							ctor: '_Tuple2',
+							_0: 'x',
+							_1: _elm_lang$core$Json_Encode$float(_p1.x)
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								ctor: '_Tuple2',
+								_0: 'y',
+								_1: _elm_lang$core$Json_Encode$float(_p1.y)
+							},
+							_1: {ctor: '[]'}
+						}
+					});
+				var moveCmd = _elm_lang$core$Json_Encode$object(
+					{
+						ctor: '::',
+						_0: {
+							ctor: '_Tuple2',
+							_0: 'tag',
+							_1: _elm_lang$core$Json_Encode$string('Move')
+						},
+						_1: {
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'contents', _1: moveCoords},
+							_1: {ctor: '[]'}
+						}
+					});
+				var wsCmd = A2(
+					_elm_lang$websocket$WebSocket$send,
+					_user$project$App$haskellServer,
+					A2(_elm_lang$core$Json_Encode$encode, 0, moveCmd));
 				return A2(
 					F2(
 						function (x, y) {
 							return A2(_elm_lang$core$Platform_Cmd_ops['!'], x, y);
 						}),
 					model,
-					{ctor: '[]'});
+					{
+						ctor: '::',
+						_0: wsCmd,
+						_1: {ctor: '[]'}
+					});
 			default:
-				var _p1 = A2(_elm_lang$core$Json_Decode$decodeString, _user$project$Data$decodeBoard, _p0._0);
-				if (_p1.ctor === 'Ok') {
+				var _p2 = A2(_elm_lang$core$Json_Decode$decodeString, _user$project$Data$decodeBoard, _p0._0);
+				if (_p2.ctor === 'Ok') {
 					return A2(
 						F2(
 							function (x, y) {
@@ -38,7 +78,7 @@ var _user$project$App$update = F2(
 							}),
 						_elm_lang$core$Native_Utils.update(
 							model,
-							{board: _p1._0}),
+							{board: _p2._0}),
 						{ctor: '[]'});
 				} else {
 					return A2(
@@ -51,15 +91,6 @@ var _user$project$App$update = F2(
 				}
 		}
 	});
-var _user$project$App$initModel = {
-	input: '',
-	board: A2(
-		_user$project$Types$Board,
-		{ctor: '[]'},
-		{ctor: '[]'})
-};
-var _user$project$App$init = {ctor: '_Tuple2', _0: _user$project$App$initModel, _1: _elm_lang$core$Platform_Cmd$none};
-var _user$project$App$haskellServer = 'ws://localhost:8000';
 var _user$project$App$Model = F2(
 	function (a, b) {
 		return {input: a, board: b};
@@ -79,7 +110,9 @@ var _user$project$App$subscriptions = function (model) {
 			}
 		});
 };
-var _user$project$App$Send = {ctor: 'Send'};
+var _user$project$App$Move = function (a) {
+	return {ctor: 'Move', _0: a};
+};
 var _user$project$App$Input = function (a) {
 	return {ctor: 'Input', _0: a};
 };
@@ -107,12 +140,14 @@ var _user$project$App$view = function (model) {
 					_elm_lang$html$Html$button,
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html_Events$onClick(_user$project$App$Send),
+						_0: _elm_lang$html$Html_Events$onClick(
+							_user$project$App$Move(
+								A2(_user$project$Types$Coords, -1.0, 0.0))),
 						_1: {ctor: '[]'}
 					},
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html$text('Send'),
+						_0: _elm_lang$html$Html$text('Left'),
 						_1: {ctor: '[]'}
 					}),
 				_1: {ctor: '[]'}

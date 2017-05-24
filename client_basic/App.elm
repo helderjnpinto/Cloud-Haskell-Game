@@ -15,6 +15,7 @@ import Json.Encode as JE
 import Json.Decode as JD exposing (Decoder, float, int)
 import Data exposing (..)
 
+
 main : Program Never Model Msg
 main =
     Html.program
@@ -39,6 +40,7 @@ type alias Model =
     , board : Board
     }
 
+
 initModel : Model
 initModel =
     { input = ""
@@ -55,9 +57,12 @@ init =
 -- UPDATE
 
 
+
 type Msg
     = Input String
-    | Send
+    | Move Coords
+    -- | UpdateName String
+    -- | SendName String
     | NewMessage String
 
 
@@ -67,18 +72,36 @@ update msg model =
         Input newInput ->
             (!) model []
 
-        Send ->
+        Move coords ->
             -- (Model "" messages, WebSocket.send echoServer input)
-            (!) model []
+            let
+                moveCoords =
+                    JE.object
+                        [ ( "x", JE.float coords.x )
+                        , ( "y", JE.float coords.y )
+                        ]
+
+                moveCmd =
+                    JE.object
+                        [ ( "tag", JE.string "Move" )
+                        , ( "contents", moveCoords )
+                        ]
+
+                wsCmd =
+                    JE.encode 0 moveCmd
+                    |> WebSocket.send haskellServer
+            in
+                (!) model [ wsCmd ]
 
         NewMessage v ->
-          case (JD.decodeString decodeBoard v) of
-            -- ok correct decoded data
-              Ok boardData ->
-                  (!) { model | board = boardData } []
-            -- Error
-              _ ->
-                  (!) model []
+            case (JD.decodeString decodeBoard v) of
+                -- ok correct decoded data
+                Ok boardData ->
+                    (!) { model | board = boardData } []
+
+                -- Error
+                _ ->
+                    (!) model []
 
 
 
@@ -101,13 +124,5 @@ view : Model -> Html Msg
 view model =
     div []
         [ input [ onInput Input, value model.input ] []
-        , button [ onClick Send ] [ text "Send" ]
+        , button [ onClick (Move <| Coords -1.0 0.0 ) ] [ text "Left" ]
         ]
-
-
-viewMessage : String -> Html msg
-viewMessage msg =
-    div [] [ text msg ]
-
-
--- Decoders

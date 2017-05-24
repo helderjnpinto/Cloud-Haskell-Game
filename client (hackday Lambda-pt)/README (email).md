@@ -24,7 +24,7 @@ elm-packages install
 
 ## Run demo using elm-live
 
-Ex:
+Root project run (Linux):
 
 `elm-live ./src/App.elm --output ./js/main.js --port=8001 --open`
 
