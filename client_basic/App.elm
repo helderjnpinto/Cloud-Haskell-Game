@@ -61,7 +61,6 @@ init =
 type Msg
     = Input String
     | Move Coords
-    -- | UpdateName String
     -- | SendName String
     | NewMessage String
 
@@ -70,7 +69,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Input newInput ->
-            (!) model []
+            (!) { model | input = newInput } []
 
         Move coords ->
             -- (Model "" messages, WebSocket.send echoServer input)
