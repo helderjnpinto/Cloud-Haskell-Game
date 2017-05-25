@@ -11,14 +11,84 @@ var _user$project$App$update = F2(
 	function (msg, model) {
 		var _p0 = msg;
 		switch (_p0.ctor) {
-			case 'Input':
+			case 'SendName':
+				var moveCmd = _elm_lang$core$Json_Encode$object(
+					{
+						ctor: '::',
+						_0: {
+							ctor: '_Tuple2',
+							_0: 'tag',
+							_1: _elm_lang$core$Json_Encode$string('SetName')
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								ctor: '_Tuple2',
+								_0: 'contents',
+								_1: _elm_lang$core$Json_Encode$string(model.input)
+							},
+							_1: {ctor: '[]'}
+						}
+					});
+				var wsCmd = A2(
+					_elm_lang$websocket$WebSocket$send,
+					_user$project$App$haskellServer,
+					A2(_elm_lang$core$Json_Encode$encode, 0, moveCmd));
 				return A2(
 					F2(
 						function (x, y) {
 							return A2(_elm_lang$core$Platform_Cmd_ops['!'], x, y);
 						}),
 					model,
+					{
+						ctor: '::',
+						_0: wsCmd,
+						_1: {ctor: '[]'}
+					});
+			case 'Input':
+				return A2(
+					F2(
+						function (x, y) {
+							return A2(_elm_lang$core$Platform_Cmd_ops['!'], x, y);
+						}),
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{input: _p0._0}),
 					{ctor: '[]'});
+			case 'SetColor':
+				var moveCmd = _elm_lang$core$Json_Encode$object(
+					{
+						ctor: '::',
+						_0: {
+							ctor: '_Tuple2',
+							_0: 'tag',
+							_1: _elm_lang$core$Json_Encode$string('SetColor')
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								ctor: '_Tuple2',
+								_0: 'contents',
+								_1: _elm_lang$core$Json_Encode$string(_p0._0)
+							},
+							_1: {ctor: '[]'}
+						}
+					});
+				var wsCmd = A2(
+					_elm_lang$websocket$WebSocket$send,
+					_user$project$App$haskellServer,
+					A2(_elm_lang$core$Json_Encode$encode, 0, moveCmd));
+				return A2(
+					F2(
+						function (x, y) {
+							return A2(_elm_lang$core$Platform_Cmd_ops['!'], x, y);
+						}),
+					model,
+					{
+						ctor: '::',
+						_0: wsCmd,
+						_1: {ctor: '[]'}
+					});
 			case 'Move':
 				var _p1 = _p0._0;
 				var moveCoords = _elm_lang$core$Json_Encode$object(
@@ -110,6 +180,30 @@ var _user$project$App$subscriptions = function (model) {
 			}
 		});
 };
+var _user$project$App$SetColor = function (a) {
+	return {ctor: 'SetColor', _0: a};
+};
+var _user$project$App$colorPicker = A2(
+	_elm_lang$html$Html$input,
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html_Attributes$type_('color'),
+		_1: {
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$name('favcolor'),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$value('#ff0000'),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$html$Html_Events$onInput(_user$project$App$SetColor),
+					_1: {ctor: '[]'}
+				}
+			}
+		}
+	},
+	{ctor: '[]'});
+var _user$project$App$SendName = {ctor: 'SendName'};
 var _user$project$App$Move = function (a) {
 	return {ctor: 'Move', _0: a};
 };
@@ -150,7 +244,77 @@ var _user$project$App$view = function (model) {
 						_0: _elm_lang$html$Html$text('Left'),
 						_1: {ctor: '[]'}
 					}),
-				_1: {ctor: '[]'}
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$button,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Events$onClick(
+								_user$project$App$Move(
+									A2(_user$project$Types$Coords, 1.0, 0.0))),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('Right'),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$button,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onClick(
+									_user$project$App$Move(
+										A2(_user$project$Types$Coords, 0.0, 1.0))),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('Down'),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$button,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Events$onClick(
+										_user$project$App$Move(
+											A2(_user$project$Types$Coords, 0.0, -1.0))),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('UP'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$button,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Events$onClick(_user$project$App$SendName),
+										_1: {ctor: '[]'}
+									},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('Sent name'),
+										_1: {ctor: '[]'}
+									}),
+								_1: {
+									ctor: '::',
+									_0: _user$project$App$colorPicker,
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					}
+				}
 			}
 		});
 };
